@@ -9,8 +9,31 @@ using namespace std;
 
 void get_URL( const string& host, const string& path )
 {
-  cerr << "Function called: get_URL(" << host << ", " << path << ")\n";
-  cerr << "Warning: get_URL() has not been implemented yet.\n";
+  try {
+    TCPSocket socket;
+    Address server_address( host, "http" );
+    socket.connect( server_address );
+
+    std::string request = "GET " + path
+                          + " HTTP/1.1\r\n"
+                            "Host: "
+                          + host
+                          + "\r\n"
+                            "Connection: closer\r\n"
+                            "\r\n";
+
+    socket.write( request );
+
+    std::string response;
+    while ( !socket.eof() ) {
+      socket.read( response );
+      std::cout << response;
+    }
+
+    socket.close();
+  } catch ( const std::exception& e ) {
+    cerr << e.what() << "\n"; 
+  }
 }
 
 int main( int argc, char* argv[] )
