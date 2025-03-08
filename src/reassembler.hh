@@ -2,6 +2,9 @@
 
 #include "byte_stream.hh"
 
+#include <map>
+#include <optional>
+
 class Reassembler
 {
 public:
@@ -43,4 +46,12 @@ public:
 
 private:
   ByteStream output_;
+
+  std::map<uint64_t, std::string> buffer_ {};
+  uint64_t pending_bytes_ {};
+
+  std::optional<uint64_t> next_index_ {};
+
+  auto split( uint64_t pos ) noexcept;
+  void try_close() noexcept;
 };
