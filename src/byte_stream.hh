@@ -25,6 +25,10 @@ protected:
   // Please add any additional state to the ByteStream here, and not to the Writer and Reader interfaces.
   uint64_t capacity_;
   bool error_ {};
+  std::string buffer_;          // 存储字节流内容的缓冲区
+  bool closed_ { false };       // 指示字节流是否已经关闭
+  uint64_t bytes_popped_ { 0 }; // 记录已经弹出的字节数
+  uint64_t bytes_pushed_ { 0 }; // 记录已经存入的字节数
 };
 
 class Writer : public ByteStream
