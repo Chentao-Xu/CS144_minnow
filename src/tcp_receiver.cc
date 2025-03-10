@@ -21,11 +21,12 @@ void TCPReceiver::receive( TCPSenderMessage message )
     return;
   }
 
-  uint64_t abs_seqno = message.seqno.unwrap( isn_.value(), writer().bytes_pushed() + 1 );
-  if ( !message.SYN ) {
-    abs_seqno -= 1; // SYN占一位
+  uint64_t abs_seqno = message.seqno.unwrap( isn_.value(), writer().bytes_pushed() );
+  uint64_t stream_index = abs_seqno - 1;
+  if ( message.SYN ) {
+    stream_index = 0; // SYN占一位
   }
-  reassembler_.insert( abs_seqno, move( message.payload ), message.FIN );
+  reassembler_.insert( stream_index, move( message.payload ), message.FIN );
 }
 
 TCPReceiverMessage TCPReceiver::send() const
