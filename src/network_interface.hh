@@ -2,10 +2,15 @@
 
 #include "address.hh"
 #include "ethernet_frame.hh"
+#include "ethernet_header.hh"
 #include "ipv4_datagram.hh"
 
+#include "arp_message.hh"
+#include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <queue>
+#include <unordered_map>
 
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
@@ -82,4 +87,20 @@ private:
 
   // Datagrams that have been received
   std::queue<InternetDatagram> datagrams_received_ {};
+
+  // ARP has been cached
+  std::unordered_map<uint32_t, std::pair<EthernetAddress, size_t>> arp_cache_ {};
+
+  // IP frame waitting to be sent
+  std::unordered_map<uint32_t, std::queue<InternetDatagram>> waiting_frames_ {};
+
+  // ARP requests and time
+  std::unordered_map<uint32_t, size_t> arp_requests_ {};
+
+  // Current time
+  size_t current_time_ { 0 };
+
+  ARPMessage make_arp( const uint16_t opcode,
+                       const EthernetAddress target_ethernet_address,
+                       const uint32_t target_ip_address );
 };
