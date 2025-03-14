@@ -3,7 +3,6 @@
 
 #include "address.hh"
 #include "arp_message.hh"
-#include "debug.hh"
 #include "ethernet_frame.hh"
 #include "ethernet_header.hh"
 #include "exception.hh"
